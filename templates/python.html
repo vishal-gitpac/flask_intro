@@ -1,0 +1,21 @@
+<html>
+  <body>
+    <h1>Hello</h1>
+    <p>
+        {%for x in range(10) %}
+        {% if x%2 == 1 %}
+        <!--to get variable x-->
+        <p>{{x}}</p>\
+        <!--to get text x-->
+        <p>x</p>
+        {% endif %}
+        {% endfor %}
+    </p>
+    <p>
+        <!--to loop over list and print -->
+        {%for item in content %}
+        <p>{{item}}</p>
+        {% endfor %}
+    </p>
+  </body>
+</html>
