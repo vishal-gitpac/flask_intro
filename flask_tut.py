@@ -44,7 +44,7 @@ def dyna_tem(name):
     return render_template("dynamic.html", content=name)
 
 
-# to render form with get post methods
+# to render form with get, post methods
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -62,6 +62,7 @@ def login():
         return render_template("login.html", content=users)
 
 
+# route to delete user by adding his name in the route
 @app.route("/login/delete/<usr>")
 def del_user(usr):
     mycursor = mycon.cursor()
@@ -71,6 +72,7 @@ def del_user(usr):
     return redirect(url_for("login"))
 
 
+# route to update user details
 @app.route("/login/update/<usr>", methods=["GET", "POST"])
 def upd_user(usr):
     if request.method == "POST":
@@ -107,5 +109,6 @@ def redir2():
     return redirect(url_for("user", name="vishal"))
 
 
+# debug = True , make program re run after making any changes
 if __name__ == "__main__":
     app.run(debug=True)
