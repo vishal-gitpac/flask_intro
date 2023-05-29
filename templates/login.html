@@ -5,6 +5,9 @@
       <p>Name:</p>
       <p><input type="text" name="nm" /></p>
       <p><input type="submit" value="submit" /></p>
+      {%for user in content%}
+      <p>{{user[0]}}</p>
+      {%endfor%}
     </form>
   </body>
 </html>

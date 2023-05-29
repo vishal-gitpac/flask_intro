@@ -1,6 +1,17 @@
 from flask import Flask, redirect, url_for, render_template, request
+import yaml
+import mysql.connector
 
 app = Flask(__name__)
+
+db = yaml.load(open("db.yaml"), Loader=yaml.Loader)
+
+mycon = mysql.connector.connect(
+    host=db["mysql_host"],
+    user=db["mysql_username"],
+    password=db["mysql_password"],
+    database=db["mysql_db"],
+)
 
 
 # to render home route
@@ -38,9 +49,39 @@ def dyna_tem(name):
 def login():
     if request.method == "POST":
         user2 = request.form["nm"]
+        mycursor = mycon.cursor()
+        mycursor.execute("INSERT INTO users(name)  VALUES(%s)", (user2,))
+        mycon.commit()
+        mycursor.close()
         return redirect(url_for("user2", usr=user2))
     else:
-        return render_template("login.html")
+        mycursor = mycon.cursor()
+        users_list = mycursor.execute("SELECT * FROM users")
+        users = mycursor.fetchall()
+        mycursor.close()
+        return render_template("login.html", content=users)
+
+
+@app.route("/login/delete/<usr>")
+def del_user(usr):
+    mycursor = mycon.cursor()
+    mycursor.execute("DELETE FROM users WHERE name=%s", (usr,))
+    mycon.commit()
+    mycursor.close()
+    return redirect(url_for("login"))
+
+
+@app.route("/login/update/<usr>", methods=["GET", "POST"])
+def upd_user(usr):
+    if request.method == "POST":
+        mycursor = mycon.cursor()
+        username = request.form["nm"]
+        mycursor.execute("UPDATE users SET name=%s WHERE name=%s", (username, usr))
+        mycon.commit()
+        mycursor.close()
+        return redirect(url_for("login"))
+    if request.method == "GET":
+        return render_template("update_form.html")
 
 
 # to render html template with python logic written inside it
@@ -67,4 +108,4 @@ def redir2():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
