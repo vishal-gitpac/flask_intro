@@ -109,6 +109,18 @@ def redir2():
     return redirect(url_for("user", name="vishal"))
 
 
+@app.route("/user", methods=["GET"])
+def queryuser():
+    args = request.args
+    name = args.get("name")
+    if name:
+        mycursor = mycon.cursor()
+        mycursor.execute("INSERT INTO users(name)  VALUES(%s)", (name,))
+        mycon.commit()
+        mycursor.close()
+        return redirect(url_for("user2", usr=name))
+
+
 # debug = True , make program re run after making any changes
 if __name__ == "__main__":
     app.run(debug=True)
